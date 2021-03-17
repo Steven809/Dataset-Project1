@@ -64,6 +64,7 @@ sns.pairplot(data = NYC2, hue = "BOROUGH")
 
 sns.scatterplot(x = "REFUSETONSCOLLECTED", y = "MGPTONSCOLLECTED", hue = "BOROUGH", data = NYC2)
 plt.title("Recycle")
+sns.regplot( x = x = "REFUSETONSCOLLECTED", y = "MGPTONSCOLLECTED", data = NYC2) # Regression plot
 
 
 # In[98]:
@@ -71,4 +72,5 @@ plt.title("Recycle")
 
 sns.scatterplot(x = "REFUSETONSCOLLECTED", y = "PAPERTONSCOLLECTED", hue = "BOROUGH", data = NYC2)
 plt.title("Recycle")
+sns.regplot(x = "REFUSETONSCOLLECTED", y = "PAPERTONSCOLLECTED", data = NYC2) # Regression plot 
 
