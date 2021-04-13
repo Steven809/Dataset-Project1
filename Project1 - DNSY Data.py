@@ -93,3 +93,15 @@ linear_model.fit(x_train,y_train)
 y_test_preds_linear = linear_model.predict(x_test)
 
 mean_squared_error(y_test_preds_linear,y_test)
+
+x2 = NYC2[["PAPERTONSCOLLECTED", "MGPTONSCOLLECTED","RESORGANICSTONS"]]
+y2 = NYC2["REFUSETONSCOLLECTED"]
+
+x_train2, x_test2, y_train2, y_test2 = train_test_split(x2, y2, test_size = 0.2)
+
+linear_model2 = LinearRegression()
+linear_model2.fit(x_train2,y_train2)
+
+y_test_preds_linear2 = linear_model2.predict(x_test2)
+
+mean_squared_error(y_test_preds_linear2,y_test2)
