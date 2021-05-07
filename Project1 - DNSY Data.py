@@ -53,14 +53,26 @@ plt.title("Recylce")
 plt.xlabel("Metal, Glass, Plastic recycle Collection")
 plt.ylabel("# of collection")
 
+NYC["RESORGANICSTONS"].hist(bins = 20)
+plt.title("Recylce")
+plt.xlabel("Organic recycle Collection")
+plt.ylabel("# of collection")
+
+NYC["PAPERTONSCOLLECTED"].hist(bins = 20)
+plt.title("Recylce")
+plt.xlabel("Paper and Cardboard recycle Collection")
+plt.ylabel("# of collection")
+
 #Project Milestone 2
 
 from sklearn.model_selection import train_test_split
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.neighbors import KNeighborsClassifier
-from sklearn.metrics import confusion_matrix
+from sklearn.metrics import mean_squared_error
 from sklearn.tree import DecisionTreeRegressor
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import confusion_matrix
 import matplotlib
 %matplotlib inline
 
@@ -71,19 +83,19 @@ y = NYC2["REFUSETONSCOLLECTED"]
 
 x_train, x_test, y_train, y_test = train_test_split(x, y, test_size = 0.2)
 
-reg5 = DecisionTreeRegressor(max_depth = 5)
-reg5 = reg5.fit(x_train, y_train)
+reg2 = DecisionTreeRegressor(max_depth = 2)
+reg2 = reg2.fit(x_train, y_train)
 
-pred_5 = reg5.predict(x_test)
+pred_2 = reg2.predict(x_test)
 
-mean_squared_error(pred_5, y_test)
+mean_squared_error(pred_2, y_test)
 
-reg10 = DecisionTreeRegressor(max_depth = 10)
-reg10 = reg10.fit(x_train, y_train)
+reg2 = DecisionTreeRegressor(max_depth = 2)
+reg2 = reg2.fit(x_train, y_train)
 
-pred_10 = reg10.predict(x_test)
+pred_2 = reg2.predict(x_test)
 
-mean_squared_error(pred_10, y_test)
+mean_squared_error(pred_2, y_test)
 
 #Linear Regression
 
@@ -105,3 +117,72 @@ linear_model2.fit(x_train2,y_train2)
 y_test_preds_linear2 = linear_model2.predict(x_test2)
 
 mean_squared_error(y_test_preds_linear2,y_test2)
+
+# Project Milestone 3 
+from sklearn.preprocessing import MinMaxScaler
+from sklearn.cluster import KMeans
+from sklearn.metrics import confusion_matrix
+import folium
+
+#Two new graph
+
+sns.jointplot(x = "REFUSETONSCOLLECTED", y = "PAPERTONSCOLLECTED", kind = "kde", color = "Green",data = NYC2)
+
+sns.jointplot(x = "REFUSETONSCOLLECTED", y = "MGPTONSCOLLECTED", kind = "hex", color = "red",data = NYC2)
+
+map = folium.Map(location=[40.8747, -73.8951])
+
+folium.Marker([40.75, -73.86667], popup="Queens", tooltip = "Click for information",
+             icon = folium.Icon(color = 'orange')).add_to(map)
+folium.Marker([40.826153, -73.920265], popup="Bronx", tooltip = "Click for information",
+             icon = folium.Icon(color = "red")).add_to(map)
+folium.Marker([40.75325, -74.00381], popup="Manhattan", tooltip = "Click for information",
+             icon = folium.Icon(color = "green")).add_to(map)
+folium.Marker([40.692528, -73.991], popup="Brooklyn", tooltip = "Click for information",
+             icon = folium.Icon(color = "blue")).add_to(map)
+folium.Marker([40.580753, -74.152794], popup="Staten Island", tooltip = "Click for information",
+             icon = folium.Icon(color = "purple")).add_to(map)
+map
+
+# Clusters
+
+kmeans = KMeans(n_clusters = 5)
+kmeans.fit(x)
+clusters = kmeans.predict(x)
+
+NYC2["clusters"] = clusters
+NYC2.head()
+
+sns.pairplot(NYC2, hue = "clusters")
+
+scaler = MinMaxScaler()
+
+x_scaled = scaler.fit_transform(x)
+x_scaled
+
+kmeans_scaled = KMeans(n_clusters = 5)
+kmeans_scaled.fit(x_scaled)
+
+clusters_scaled = kmeans_scaled.predict(x_scaled)
+clusters_scaled
+
+NYC2["clusters_scaled"] = clusters_scaled
+NYC2.head()
+
+sns.pairplot(NYC2, hue = "clusters_scaled")
+
+cluster_scaled_map = {"0":"Queens", "1":"Brooklyn", "2":"Staten Island", "3":"Bronx", "4":"Manhattan"}
+NYC2["mapped_clusters_scaled"] = NYC2["clusters_scaled"].apply(str).map(cluster_scaled_map)
+NYC2.head()
+
+# Correlation, causation, and heat maps
+
+NYC2.corr()
+
+corr_matrix = NYC2.corr()
+sns.heatmap(corr_matrix)
+
+NYC.corr()
+
+corr_matrix2 = NYC.corr()
+sns.heatmap(corr_matrix2)
